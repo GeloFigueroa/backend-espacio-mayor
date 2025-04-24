@@ -59,3 +59,16 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+
+
+apartados de comandos
+
+## crear nueva tabla (nivel php)
+php artisan make:migration create_tarjetas
+## procesar la creacion de las tablas
+php artisan migrate  
+## crear modelo (nivel php)
+php artisan make:model Tarjeta
+## creacion de controladores
+php artisan make:controller TarjetaController --resource
