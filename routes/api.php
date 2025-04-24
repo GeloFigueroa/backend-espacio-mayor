@@ -7,13 +7,9 @@ use App\Http\Controllers\TarjetaController;
 
 Route::get('/tarjetas', [TarjetaController::class, 'index']);
 
-Route::get('/tarjetas/{id}', function () {
-    return 'Buscando al tarjeta';
-});
+Route::get('/tarjetas/{id}', [TarjetaController::class, 'index']);
 
-Route::post('/tarjetas', function () {
-    return 'Creando tarjeta';
-});
+Route::post('/tarjetas', [TarjetaController::class, 'store']);
 
 Route::put('/tarjetas/{id}', function () {
     return 'Actualizando tarjeta';
