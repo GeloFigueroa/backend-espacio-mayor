@@ -3,18 +3,16 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\ListaController;
 use App\Http\Controllers\TarjetaController;
 
+//Tarjetas
 Route::get('/tarjetas', [TarjetaController::class, 'index']);
-
-Route::get('/tarjetas/{id}', [TarjetaController::class, 'index']);
-
 Route::post('/tarjetas', [TarjetaController::class, 'store']);
+Route::delete('/tarjetas/{id}', [TarjetaController::class, 'delete']);
+Route::put('/tarjetas/{id}', [TarjetaController::class, 'update']);
 
-Route::put('/tarjetas/{id}', function () {
-    return 'Actualizando tarjeta';
-});
-
-Route::delete('/tarjetas/{id}', function () {
-    return 'Eliminando tarjeta';
-});
+//Listas
+Route::get('listas/{id}', [ListaController::class, 'show']);
+Route::post('listas', [ListaController::class, 'store']);
+// Route::post('listas/{listaId}/tarjetas', [ListaController::class, 'addTarjeta']);

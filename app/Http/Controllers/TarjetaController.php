@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tarjeta;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Lista;
+use App\Http\Requests\StoreTarjetaRequest;
 
 class TarjetaController extends Controller
 {
@@ -14,93 +15,55 @@ class TarjetaController extends Controller
         return response()->json($tarjetas);
     }
 
-    public function store(Request $request)
+    //creacion de nueva Tarjeta
+    public function store(StoreTarjetaRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'titulo' => 'required',
-            'subtitulo' => 'required',
-            'categoria' => 'required',
-            'color' => 'required',
-            'firma' => 'required',
-            'imagenURL' => 'required',
-            'georeferenciacion' => 'required',
-            'tiempoExpiracion' => 'required',
-            'tipo' => 'required',
-            'favorito' => 'required',
-            'nuevoTicket' => 'required',
-            'path' => 'required',
-        ]);
+        $validatedData = $request->validated();
 
-        if($validator->fails()){
-            $data = [
-                'message' => 'Error en la validacion de los datos',
-                'error' => $validator->errors(),
-                'status' => 400
-            ];
-            return response()->json($data, 400);
+        $dataParaCrear = [
+            'titulo'            => $validatedData['titulo'] ?? null,
+            'subtitulo'         => $validatedData['subtitulo'] ?? null,
+            'color'             => $validatedData['color'] ?? null,
+            'imagenURL'         => $validatedData['imagenURL'] ?? null,
+            'firma'             => $validatedData['firma'] ?? null,
+            'georeferenciacion' => $validatedData['georeferenciacion'] ?? null,
+            'fecha_expiracion'  => $validatedData['fecha_expiracion'] ?? null,
+            'diseno_tarjeta'    => $validatedData['diseno_tarjeta'],
+            'nuevoTicket'       => $validatedData['nuevoTicket'] ?? false,
+            'id_padre'          => $validatedData['id_padre'] ?? null,
+            'tipo_contenido'    => $validatedData['tipo_contenido'],
+            'contenido'         => $validatedData['contenido'] ?? [],
+        ];
+
+        // Si tipo_contenido es 'listadoTarjetas', creamos una nueva lista
+        if ($validatedData['tipo_contenido'] === Tarjeta::LISTADO_TARJETAS) {
+            $tituloNuevaLista = $validatedData['titulo'] ?? 'Sin titulo';
+            $tipoContenidoNuevaLista = $validatedData['contenido']['tipo_lista'];
+
+            $nuevaLista = Lista::create([
+                'tituloTarjeta' => $tituloNuevaLista,
+                'tipoLista'     => $tipoContenidoNuevaLista,
+            ]);
+
+            $dataParaCrear['contenido'] = array_merge(
+                $dataParaCrear['contenido'],
+                [
+                    'id_lista'   => $nuevaLista->id,
+                    'tipo_lista' => $nuevaLista->tipoLista,
+                ]
+            );
         }
 
-        $tarjeta = Tarjeta::create($request->only([
-            'titulo',
-            'subtitulo',
-            'categoria',
-            'color',
-            'imagenURL',
-            'firma',
-            'georeferenciacion',
-            'tiempoExpiracion',
-            'tipo',
-            'favorito',
-            'nuevoTicket',
-            'path'
-        ]));
+        $tarjeta = Tarjeta::create($dataParaCrear);
 
-        if(!$tarjeta) {
-            $data = [
-                'message' => 'Error al crear la tarjeta',
-                'status' => 500
-            ];
-            return response()->json($data, 500);
+        if (!$tarjeta) {
+            return response()->json(['message' => 'Error al crear la tarjeta', 'status' => 500], 500);
         }
-    
+
         return response()->json([
             'message' => 'Tarjeta creada correctamente',
-            'data' => $tarjeta,
-            'status' => 201
+            'data'    => $tarjeta->load('lista'),
+            'status'  => 201
         ], 201);
-
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
