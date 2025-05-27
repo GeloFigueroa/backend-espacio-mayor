@@ -7,36 +7,74 @@ use Illuminate\Http\Request;
 
 class ListaController extends Controller
 {
-    //pedir una lista por id
-    public function show(string $id)
+    // Obtener todas las listas
+    public function index()
     {
-        $lista = Lista::with('tarjetas')->findOrFail($id);
+        $listas = Lista::with('tarjetas')->get();
+        return response()->json($listas);
+    }
+
+    // Mostrar una lista específica
+    public function show($id)
+    {
+        $lista = Lista::with('tarjetas')->find($id);
+
+        if (!$lista) {
+            return response()->json(['message' => 'Lista no encontrada'], 404);
+        }
+
         return response()->json($lista);
     }
-    
+
     // Crear una nueva lista
     public function store(Request $request)
     {
-        $request->validate([
-            'titulo' => 'required|string|max:255'
+        $validated = $request->validate([
+            'tituloTarjeta' => 'required|string|max:255',
+            'tipoLista' => 'required|string|max:255',
         ]);
-        
-        $lista = Lista::create($request->only('titulo'));
-        
-        return response()->json($lista, 201);
+
+        $lista = Lista::create($validated);
+
+        return response()->json([
+            'message' => 'Lista creada correctamente',
+            'data' => $lista,
+        ], 201);
     }
 
-
-    // Agregar tarjeta a una lista
-    public function addTarjeta(Request $request, $listaId)
+    // Actualizar una lista existente
+    public function update(Request $request, $id)
     {
-        $request->validate([
-            'tarjeta_id' => 'required|exists:tarjetas,id'
+        $lista = Lista::find($id);
+
+        if (!$lista) {
+            return response()->json(['message' => 'Lista no encontrada'], 404);
+        }
+
+        $validated = $request->validate([
+            'tituloTarjeta' => 'sometimes|required|string|max:255',
+            'tipoLista' => 'sometimes|required|string|max:255',
         ]);
-        
-        $lista = Lista::findOrFail($listaId);
-        $lista->tarjetas()->attach($request->tarjeta_id);
-        
-        return response()->json(['message' => 'Tarjeta agregada a la lista']);
+
+        $lista->update($validated);
+
+        return response()->json([
+            'message' => 'Lista actualizada correctamente',
+            'data' => $lista,
+        ]);
+    }
+
+    // Eliminar una lista
+    public function destroy($id)
+    {
+        $lista = Lista::find($id);
+
+        if (!$lista) {
+            return response()->json(['message' => 'Lista no encontrada'], 404);
+        }
+
+        $lista->delete();
+
+        return response()->json(['message' => 'Lista eliminada correctamente']);
     }
 }
