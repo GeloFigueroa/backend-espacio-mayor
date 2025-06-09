@@ -39,4 +39,43 @@ class AuthController extends Controller
             'user' => $user
         ]);
     }
+
+    public function register(Request $request)
+    {
+        // 1. Validar los datos de entrada
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed', // 'confirmed' busca un campo 'password_confirmation'
+        ]);
+
+        // 2. Crear el usuario en la base de datos
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            // ¡MUY IMPORTANTE! NUNCA guardes la contraseña en texto plano.
+            // Hash::make() la encripta de forma segura.
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
+        // 3. (Opcional) Iniciar sesión inmediatamente creando un token
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Usuario registrado exitosamente.',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+        ], 201); // 201: Created
+    }
+
+    public function logout(Request $request)
+    {
+        // Revoca el token actual que se usó para autenticar la petición
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Sesión cerrada correctamente.'
+        ]);
+    }
 }
