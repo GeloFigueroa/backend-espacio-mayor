@@ -22,12 +22,14 @@ class Tarjeta extends Model
     const LISTADO_TARJETAS = 'listadoTarjetas';
     const VIDEOS_YOUTUBE = 'videosYoutube';
     const PDF = 'pdf';
+    const SUB_TITULO = 'subTitulo';
 
     public static $tiposContenidoPermitidos = [
         self::WEB_VIEW,
         self::LISTADO_TARJETAS,
         self::VIDEOS_YOUTUBE,
         self::PDF,
+        self::SUB_TITULO,
     ];
 
     protected $fillable = [
