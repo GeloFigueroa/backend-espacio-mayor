@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarjeta;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Lista;
 use App\Http\Requests\StoreTarjetaRequest;
@@ -12,7 +13,10 @@ class TarjetaController extends Controller
 {
     public function index()
     {
-        $tarjetas = Tarjeta::all();
+        // $tarjetas = Tarjeta::all();
+        // return response()->json($tarjetas);
+
+        $tarjetas = Tarjeta::orderBy('position', 'asc')->get();
         return response()->json($tarjetas);
     }
 
@@ -202,8 +206,6 @@ class TarjetaController extends Controller
                     }
                 }
             }
-
-            // Eliminar la tarjeta
             $tarjeta->delete();
 
             return response()->json(['message' => 'Tarjeta eliminada correctamente.', 'status' => 200], 200);
@@ -220,7 +222,7 @@ class TarjetaController extends Controller
     {
         try {
             $tarjetasDeListado = Tarjeta::where('tipo_contenido', Tarjeta::LISTADO_TARJETAS)
-                ->orderBy('created_at', 'desc')
+                ->orderBy('position', 'asc')
                 ->get();
 
             if ($tarjetasDeListado->isEmpty()) {
@@ -263,8 +265,6 @@ class TarjetaController extends Controller
                     'tituloTarjeta' => 'Contenido de Inicio',
                     'tipoLista'     => Tarjeta::TIPO_BASICA,
                 ]);
-
-                // 2. Crear la Tarjeta "Inicio"
                 $tarjetaInicio = Tarjeta::create([
                     'titulo'            => 'Inicio',
                     'subtitulo'         => 'Bienvenido/a a la sección principal.',
@@ -336,7 +336,7 @@ class TarjetaController extends Controller
 
             return response()->json([
                 'message' => "Tarjeta 'Inicio' obtenida/asegurada correctamente.",
-                'data'    => $tarjetaInicio, // $tarjetaInicio->load('lista') si quieres la lista principal
+                'data'    => $tarjetaInicio,
                 'status'  => 200
             ], 200);
         } catch (\Exception $e) {
@@ -366,5 +366,29 @@ class TarjetaController extends Controller
                 'status' => 500
             ], 500);
         }
+    }
+
+    public function updateOrder(Request $request)
+    {
+        $validated = $request->validate([
+            'id_padre' => 'required|integer|exists:tarjetas,id',
+            'ordered_ids' => 'required|array',
+            'ordered_ids.*' => 'integer|exists:tarjetas,id',
+        ]);
+
+        DB::transaction(function () use ($validated) {
+            $padreId = $validated['id_padre'];
+
+            foreach ($validated['ordered_ids'] as $index => $tarjetaId) {
+                Tarjeta::where('id', $tarjetaId)
+                    ->where('id_padre', $padreId)
+                    ->update(['position' => $index]);
+            }
+        });
+
+        return response()->json([
+            'message' => 'El orden de las tarjetas ha sido actualizado correctamente.',
+            'status' => 200,
+        ]);
     }
 }

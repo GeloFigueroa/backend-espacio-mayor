@@ -45,6 +45,7 @@ class Tarjeta extends Model
         'id_padre',
         'tipo_contenido',
         'contenido',
+        'position',
     ];
 
     protected $casts = [
@@ -53,9 +54,20 @@ class Tarjeta extends Model
         'nuevoTicket' => 'boolean',
     ];
 
-    protected static function booted()
+    protected static function booted(): void
     {
-        static::creating(function ($tarjeta) {
+        static::saving(function (Tarjeta $tarjeta) {
+            if ($tarjeta->isDirty('id_padre') && !is_null($tarjeta->id_padre)) {
+                $maxPosition = self::where('id_padre', $tarjeta->id_padre)->max('position');
+
+                $tarjeta->position = ($maxPosition === null ? -1 : $maxPosition) + 1;
+            }
+            elseif ($tarjeta->isDirty('id_padre') && is_null($tarjeta->id_padre)) {
+                $tarjeta->position = null;
+            }
+        });
+
+        static::creating(function (Tarjeta $tarjeta) {
             $tarjeta->contenido = array_merge([
                 'id_lista' => null,
                 'tipo_lista' => null,

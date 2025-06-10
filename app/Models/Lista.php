@@ -15,8 +15,7 @@ class Lista extends Model
     ];
 
     public function tarjetas()
-{
-    return $this->hasMany(Tarjeta::class, 'id_padre', 'id');
-}
-
+    {
+        return $this->hasMany(Tarjeta::class, 'id_padre')->orderBy('position', 'asc');
+    }
 }

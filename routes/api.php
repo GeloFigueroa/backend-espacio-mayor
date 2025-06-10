@@ -11,7 +11,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     // Ruta para verificar el token y obtener datos del usuario logueado
     Route::get('/user', function (Request $request) {
         return $request->user();
@@ -28,6 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
     Route::get('/tarjetas/inicio', [TarjetaController::class, 'getTarjetaInicio']);
     Route::get('/tarjetas/sin-padre', [TarjetaController::class, 'obtenerTarjetasSinPadre']);
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/tarjetas/update-order', [TarjetaController::class, 'updateOrder']);
+    });
 
     //Listas
     Route::apiResource('/listas', ListaController::class);
