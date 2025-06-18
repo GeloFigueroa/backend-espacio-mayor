@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('titulo', 191)->nullable();
             $table->string('subtitulo', 255)->nullable();
             $table->string('color', 25)->nullable();
-            $table->string('imagenURL', 400)->nullable();
+            $table->string('imagenURL', 3000)->nullable();
             $table->string('firma', 191)->nullable();
             $table->string('georeferenciacion', 255)->nullable();
             $table->dateTime('fecha_expiracion')->nullable();
@@ -29,14 +29,14 @@ return new class extends Migration
 
             $table->boolean('nuevoTicket')->default(false);
 
-            $table->foreignId('id_padre')->nullable()->constrained('tarjetas')->onDelete('set null');
+            $table->foreignId('id_padre')->nullable()->constrained('listas')->onDelete('set null');
 
 
             $table->enum('tipo_contenido', Tarjeta::$tiposContenidoPermitidos)
                   ->nullable();
 
-            $table->json('contenido')->nullable(); // Coincide con el cast 'array' y el booted()
-            $table->timestamps(); // Campos created_at y updated_at
+            $table->json('contenido')->nullable(); 
+            $table->timestamps(); 
         });
     }
 

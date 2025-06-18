@@ -14,11 +14,6 @@ class StoreTarjetaRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules()
     {
         $isCreate = $this->isMethod('post');
@@ -27,7 +22,7 @@ class StoreTarjetaRequest extends FormRequest
             'titulo' => 'nullable|string|max:255',
             'subtitulo' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:255',
-            'imagenURL' => 'nullable|string',
+            'imagenURL' => 'nullable|string|max:3000',
             'firma' => 'nullable|string|max:255',
             'georeferenciacion' => 'nullable|string',
             'fecha_expiracion' => 'nullable|date',

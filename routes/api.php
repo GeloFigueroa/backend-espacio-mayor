@@ -10,28 +10,28 @@ use App\Http\Controllers\TarjetaController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 
+//consumo de la app
+Route::get('/tarjetas/inicio', [TarjetaController::class, 'getTarjetaInicio']);
+Route::get('/tarjetas/ayuda', [TarjetaController::class, 'getTarjetaAyuda']);
+Route::apiResource('/listas', ListaController::class);
+
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Ruta para verificar el token y obtener datos del usuario logueado
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    // Ruta para cerrar sesión (revocar el token)
     Route::post('/logout', [AuthController::class, 'logout']);
 
     //Tarjetas
     Route::get('/tarjetas', [TarjetaController::class, 'index']);
+    Route::get('/tarjetas/listados', [TarjetaController::class, 'tarjetasListados']); // Nombre corregido
+    Route::get('/tarjetas/sin-padre', [TarjetaController::class, 'obtenerTarjetasSinPadre']);
     Route::post('/tarjetas', [TarjetaController::class, 'store']);
     Route::put('/tarjetas/{id}', [TarjetaController::class, 'update']);
-    Route::get('/tarjetas/listados', [TarjetaController::class, 'tarjetasListados']); // Nombre corregido
     Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
-    Route::get('/tarjetas/inicio', [TarjetaController::class, 'getTarjetaInicio']);
-    Route::get('/tarjetas/sin-padre', [TarjetaController::class, 'obtenerTarjetasSinPadre']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/tarjetas/update-order', [TarjetaController::class, 'updateOrder']);
     });
 
-    //Listas
-    Route::apiResource('/listas', ListaController::class);
 });

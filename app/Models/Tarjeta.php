@@ -11,11 +11,15 @@ class Tarjeta extends Model
     const TIPO_BASICA = 'tarjetaBasica';
     const TIPO_MEDIANA = 'tarjetaMediana';
     const TIPO_GRANDE = 'tarjetaGrande';
+    const INFO_AYUDA = 'infoAyuda';
+    const TIPO_YOUTUBE = 'tarjetasYoutube';
 
     public static $disenoTarjetasPermitidos = [
         self::TIPO_BASICA,
         self::TIPO_MEDIANA,
         self::TIPO_GRANDE,
+        self::INFO_AYUDA,
+        self::TIPO_YOUTUBE
     ];
 
     const WEB_VIEW = 'webView';
@@ -23,6 +27,11 @@ class Tarjeta extends Model
     const VIDEOS_YOUTUBE = 'videosYoutube';
     const PDF = 'pdf';
     const SUB_TITULO = 'subTitulo';
+    const INFO_AYUDA_CONTENIDO = 'infoAyudaContenido';
+    const PAGO_DE_CUENTA = 'pagoDeCuenta';
+    const CENTRO_DE_SALUD = 'centroDeSalud';
+    const MEDIOS_DE_TRANSPORTE = 'mediosDeTransporte';
+
 
     public static $tiposContenidoPermitidos = [
         self::WEB_VIEW,
@@ -30,6 +39,11 @@ class Tarjeta extends Model
         self::VIDEOS_YOUTUBE,
         self::PDF,
         self::SUB_TITULO,
+        self::INFO_AYUDA_CONTENIDO,
+        self::PAGO_DE_CUENTA,
+        self::CENTRO_DE_SALUD,
+        self::MEDIOS_DE_TRANSPORTE,
+
     ];
 
     protected $fillable = [
@@ -61,8 +75,7 @@ class Tarjeta extends Model
                 $maxPosition = self::where('id_padre', $tarjeta->id_padre)->max('position');
 
                 $tarjeta->position = ($maxPosition === null ? -1 : $maxPosition) + 1;
-            }
-            elseif ($tarjeta->isDirty('id_padre') && is_null($tarjeta->id_padre)) {
+            } elseif ($tarjeta->isDirty('id_padre') && is_null($tarjeta->id_padre)) {
                 $tarjeta->position = null;
             }
         });

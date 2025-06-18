@@ -13,11 +13,8 @@ class TarjetaController extends Controller
 {
     public function index()
     {
-        // $tarjetas = Tarjeta::all();
-        // return response()->json($tarjetas);
-
         $tarjetas = Tarjeta::orderBy('position', 'asc')->get();
-        return response()->json($tarjetas);
+        return response()->json(['data' => $tarjetas]);
     }
 
     public function store(StoreTarjetaRequest $request)
@@ -182,12 +179,6 @@ class TarjetaController extends Controller
         }
     }
 
-    /**
-     * Elimina una tarjeta específica.
-     *
-     * @param  int  $id El ID de la Tarjeta a eliminar
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
         try {
@@ -247,12 +238,6 @@ class TarjetaController extends Controller
         }
     }
 
-    /**
-     * Asegura que la tarjeta "Inicio" exista en la base de datos.
-     * Si no existe, la crea con tipo_contenido "Listado" y una Lista asociada.
-     *
-     * @return Tarjeta La instancia de la tarjeta "Inicio".
-     */
     protected function ensureInicioCardExists(): Tarjeta
     {
         return DB::transaction(function () {
@@ -324,11 +309,77 @@ class TarjetaController extends Controller
         });
     }
 
-    /**
-     * Obtiene la tarjeta con el título 'Inicio', asegurando su existencia.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    protected function ensureAyudaCardExists(): Tarjeta
+    {
+        return DB::transaction(function () {
+            $tarjetaAyuda = Tarjeta::where('titulo', 'Ayuda')->first();
+
+            if (!$tarjetaAyuda) {
+                Log::info("Tarjeta 'Ayuda' no encontrada. Creándola ahora.");
+
+                $nuevaListaParaAyuda = Lista::create([
+                    'tituloTarjeta' => 'Ayuda',
+                    'tipoLista'     => Tarjeta::TIPO_BASICA,
+                ]);
+                $tarjetaAyuda = Tarjeta::create([
+                    'titulo'            => 'Ayuda',
+                    'subtitulo'         => 'Bienvenido/a a la sección Ayuda.',
+                    'color'             => '#FFFFFF',
+                    'imagenURL'         => null,
+                    'firma'             => null,
+                    'georeferenciacion' => null,
+                    'fecha_expiracion'  => null,
+                    'diseno_tarjeta'    => Tarjeta::TIPO_BASICA,
+                    'nuevoTicket'       => false,
+                    'id_padre'          => null,
+                    'tipo_contenido'    => Tarjeta::LISTADO_TARJETAS,
+                    'contenido'         => [
+                        'id_lista'   => $nuevaListaParaAyuda->id,
+                        'tipo_lista' => $nuevaListaParaAyuda->tipoLista,
+                        'url'        => null,
+                    ],
+                ]);
+                Log::info("Tarjeta 'Ayuda' creada con ID: " . $tarjetaAyuda->id . " y Lista asociada ID: " . $nuevaListaParaAyuda->id);
+            } else {
+                if (
+                    $tarjetaAyuda->tipo_contenido !== Tarjeta::LISTADO_TARJETAS ||
+                    !isset($tarjetaAyuda->contenido['id_lista']) ||
+                    Lista::find($tarjetaAyuda->contenido['id_lista']) === null
+                ) {
+
+                    Log::warning("Tarjeta 'Ayuda' existe (ID: {$tarjetaAyuda->id}) pero su configuración de lista es incorrecta o la lista no existe. Recreando lista asociada.");
+
+                    $listaExistenteId = $tarjetaAyuda->contenido['id_lista'] ?? null;
+                    if ($listaExistenteId) {
+                        $lista = Lista::find($listaExistenteId);
+                        if (!$lista) {
+                            $listaExistenteId = null;
+                        }
+                    }
+
+                    $listaParaAyuda = Lista::firstOrCreate(
+                        ['id' => $listaExistenteId],
+                        [
+                            'tituloTarjeta' => $tarjetaInicio->titulo ?? 'Contenido de Ayuda',
+                            'tipoLista'     => Tarjeta::TIPO_BASICA,
+                        ]
+                    );
+
+                    $contenidoActualizado = $tarjetaAyuda->contenido;
+                    $contenidoActualizado['id_lista'] = $listaParaAyuda->id;
+                    $contenidoActualizado['tipo_lista'] = $listaParaAyuda->tipoLista;
+
+                    $tarjetaAyuda->update([
+                        'tipo_contenido' => Tarjeta::LISTADO_TARJETAS,
+                        'contenido' => $contenidoActualizado
+                    ]);
+                    Log::info("Configuración de lista para Tarjeta 'Ayuda' (ID: {$tarjetaAyuda->id}) corregida. Lista asociada ID: " . $listaParaAyuda->id);
+                }
+            }
+            return $tarjetaAyuda;
+        });
+    }
+
     public function getTarjetaInicio()
     {
         try {
@@ -343,6 +394,26 @@ class TarjetaController extends Controller
             Log::error("Error crítico al obtener/asegurar la tarjeta 'Inicio': " . $e->getMessage());
             return response()->json([
                 'message' => "Error crítico al obtener/asegurar la tarjeta 'Inicio'.",
+                'error'   => $e->getMessage(),
+                'status'  => 500
+            ], 500);
+        }
+    }
+
+    public function getTarjetaAyuda()
+    {
+        try {
+            $tarjetaAyuda = $this->ensureAyudaCardExists();
+
+            return response()->json([
+                'message' => "Tarjeta 'Ayuda' obtenida/asegurada correctamente.",
+                'data'    => $tarjetaAyuda,
+                'status'  => 200
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error("Error crítico al obtener/asegurar la tarjeta 'Ayuda': " . $e->getMessage());
+            return response()->json([
+                'message' => "Error crítico al obtener/asegurar la tarjeta 'Ayuda'.",
                 'error'   => $e->getMessage(),
                 'status'  => 500
             ], 500);
