@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Tarjetas
     Route::get('/tarjetas', [TarjetaController::class, 'index']);
-    Route::get('/tarjetas/listados', [TarjetaController::class, 'tarjetasListados']); // Nombre corregido
+    Route::get('/tarjetas/listados', [TarjetaController::class, 'tarjetasListados']);
     Route::get('/tarjetas/sin-padre', [TarjetaController::class, 'obtenerTarjetasSinPadre']);
     Route::post('/tarjetas', [TarjetaController::class, 'store']);
     Route::put('/tarjetas/{id}', [TarjetaController::class, 'update']);

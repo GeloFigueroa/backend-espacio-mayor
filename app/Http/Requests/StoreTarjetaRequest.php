@@ -44,7 +44,7 @@ class StoreTarjetaRequest extends FormRequest
             'contenido.id_lista' => 'nullable|integer|exists:listas,id',
             'contenido.tipo_lista' => [
                 'nullable',
-                Rule::requiredIf(fn() => $this->input('tipo_contenido') === Tarjeta::LISTADO_TARJETAS),
+                Rule::requiredIf(fn() => in_array($this->input('tipo_contenido'), Tarjeta::$listBasedContentTypes)),
                 Rule::in(Tarjeta::$disenoTarjetasPermitidos),
             ],
             'contenido.url' => 'nullable|url',

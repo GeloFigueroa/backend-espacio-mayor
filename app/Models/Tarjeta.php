@@ -28,7 +28,7 @@ class Tarjeta extends Model
     const PDF = 'pdf';
     const SUB_TITULO = 'subTitulo';
     const INFO_AYUDA_CONTENIDO = 'infoAyudaContenido';
-    const PAGO_DE_CUENTA = 'pagoDeCuenta';
+    const PAGO_DE_SERVICIO = 'pagoDeServicio';
     const CENTRO_DE_SALUD = 'centroDeSalud';
     const MEDIOS_DE_TRANSPORTE = 'mediosDeTransporte';
 
@@ -40,7 +40,7 @@ class Tarjeta extends Model
         self::PDF,
         self::SUB_TITULO,
         self::INFO_AYUDA_CONTENIDO,
-        self::PAGO_DE_CUENTA,
+        self::PAGO_DE_SERVICIO,
         self::CENTRO_DE_SALUD,
         self::MEDIOS_DE_TRANSPORTE,
 
@@ -94,4 +94,11 @@ class Tarjeta extends Model
     {
         return $this->belongsTo(Lista::class);
     }
+
+    public static array $listBasedContentTypes = [
+        self::LISTADO_TARJETAS,
+        self::PAGO_DE_SERVICIO,
+        self::MEDIOS_DE_TRANSPORTE,
+        self::CENTRO_DE_SALUD
+    ];
 }
