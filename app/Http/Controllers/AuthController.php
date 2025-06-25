@@ -28,10 +28,9 @@ class AuthController extends Controller
         // Si la autenticación es exitosa...
         $user = User::where('email', $request->email)->firstOrFail();
 
-        // Genera un nuevo token para el usuario
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // Devuelve el token y los datos del usuario como respuesta
         return response()->json([
             'message' => 'Login exitoso',
             'access_token' => $token,
