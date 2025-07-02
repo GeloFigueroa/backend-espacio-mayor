@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Providers;
+use App\Models\Tarjeta;
+use App\Observers\TarjetaObserver;
+use Illuminate\Support\Facades\Log;
+
 
 use Illuminate\Support\ServiceProvider;
 
@@ -19,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Tarjeta::observe(TarjetaObserver::class);
     }
 }
