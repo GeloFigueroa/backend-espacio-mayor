@@ -20,7 +20,7 @@ class StoreTarjetaRequest extends FormRequest
 
         return [
             'titulo' => 'nullable|string|max:255',
-            'subtitulo' => 'nullable|string|max:255',
+            'subtitulo' => 'nullable|string|max:700',
             'color' => 'nullable|string|max:255',
             'imagenURL' => 'nullable|string|max:3000',
             'firma' => 'nullable|string|max:255',
