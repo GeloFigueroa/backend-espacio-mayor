@@ -16,11 +16,10 @@ class FirebaseNotificationService
             $client = new Google_Client();
             $client->setAuthConfig(storage_path('app/firebase/espacio-mayor-7a026-firebase-adminsdk-fbsvc-c92ee6eaca.json'));
             $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
-            
+
             // fetchAccessTokenWithAssertion puede usar una caché, es eficiente.
             $tokenData = $client->fetchAccessTokenWithAssertion();
             $this->accessToken = $tokenData['access_token'] ?? null;
-
         } catch (\Exception $e) {
             Log::error('❌ Error al autenticar con Firebase', ['message' => $e->getMessage()]);
         }
@@ -30,9 +29,8 @@ class FirebaseNotificationService
     {
         if (is_null($this->accessToken)) {
             Log::error('❌ No se pudo enviar notificación porque el token de acceso de Firebase es nulo.');
-            
         }
-        
+
         $projectId = env('FIREBASE_PROJECT_ID');
         $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
 
@@ -42,9 +40,26 @@ class FirebaseNotificationService
         $payload = [
             'message' => [
                 'topic' => $topic,
-                'data' => $stringData, // FCM data payload requiere strings
-            ]
+                'data' => [
+                    'accion' => 'actualizar',
+                    'tipo' => 'silenciosa'
+                ],
+                'apns' => [
+                    'headers' => [
+                        'apns-priority' => '5',
+                    ],
+                    'payload' => [
+                        'aps' => [
+                            'content-available' => 1,
+                        ],
+                    ],
+                ],
+                'android' => [
+                    'priority' => 'high',
+                ],
+            ],
         ];
+
 
         try {
             $response = Http::withToken($this->accessToken)
@@ -59,7 +74,6 @@ class FirebaseNotificationService
                 ]);
             }
             return $response;
-
         } catch (\Exception $e) {
             Log::error('❌ Fallo crítico en la petición a FCM', ['message' => $e->getMessage()]);
             return null;
