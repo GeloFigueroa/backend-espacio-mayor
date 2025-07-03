@@ -30,8 +30,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tarjetas', [TarjetaController::class, 'store']);
     Route::put('/tarjetas/{id}', [TarjetaController::class, 'update']);
     Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('/tarjetas/update-order', [TarjetaController::class, 'updateOrder']);
-    });
-
+    Route::post('/tarjetas/update-order', [TarjetaController::class, 'updateOrder']);
 });

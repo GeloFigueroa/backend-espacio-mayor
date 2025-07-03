@@ -349,9 +349,9 @@ public function update(StoreTarjetaRequest $request, $id)
     public function updateOrder(Request $request)
     {
         $validated = $request->validate([
-            'id_padre' => 'required|integer|exists:tarjetas,id',
+            'id_padre' => 'required|integer|exists:listas,id',
             'ordered_ids' => 'required|array',
-            'ordered_ids.*' => 'integer|exists:tarjetas,id',
+            'ordered_ids.*' => 'integer|exists:exists:listas,id',
         ]);
 
         DB::transaction(function () use ($validated) {
