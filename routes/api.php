@@ -13,7 +13,9 @@ Route::post('/register', [AuthController::class, 'register']);
 //consumo de la app
 Route::get('/tarjetas/inicio', [TarjetaController::class, 'getTarjetaInicio']);
 Route::get('/tarjetas/ayuda', [TarjetaController::class, 'getTarjetaAyuda']);
+
 Route::apiResource('/listas', ListaController::class);
+Route::get('/listas/ids/todas', [ListaController::class, 'getAllIds']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
