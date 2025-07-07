@@ -29,44 +29,63 @@ class FirebaseNotificationService
     {
         if (is_null($this->accessToken)) {
             Log::error('❌ No se pudo enviar notificación porque el token de acceso de Firebase es nulo.');
+            return null;
         }
 
         $projectId = env('FIREBASE_PROJECT_ID');
         $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
 
         $stringData = array_map('strval', $data);
+        $payload = [];
 
-        $payload = [
-            'message' => [
-                'topic' => $topic,
-                'data' => $stringData,
-                'apns' => [
-                    'headers' => [
-                        'apns-priority' => '10',
-                        'apns-push-type' => 'alert',
-                    ],
-                    'payload' => [
-                        'aps' => [
-                            'alert' => [
-                                'title' => 'hay una nueva tarjeta',
-                                'body' => 'Se actualizó la lista #' . ($data['id_lista'] ?? '¿?') . '.',
+        switch ($topic) {
+
+            case 'actualizaciones_ios':
+                Log::info("Construyendo payload para topic específico de iOS: 'actualizacion_ios'");
+                $payload = [
+                    'message' => [
+                        'topic' => $topic,
+                        'data' => $stringData,
+                        'apns' => [
+                            'payload' => [
+                                'aps' => [
+                                    'alert' => [
+                                        'title' => 'Actualización para iOS ',
+                                        'body' => 'Hay nuevo contenido disponible en la lista ' . ($data['lista_titulo'] ?? ''),
+                                    ],
+                                    'sound' => 'default',
+                                    'content-available' => 1,
+                                ],
                             ],
-                            'sound' => 'default',
                         ],
                     ],
-                ],
-                'android' => [
-                    'priority' => 'high',
-                ],
-            ],
-        ];
+                ];
+                break;
 
+            case 'actualizaciones':
+            default:
+                Log::info("Construyendo payload general para el topic: '{$topic}'");
+                $payload = [
+                    'message' => [
+                        'topic' => $topic,
+                        'data' => $stringData,
+                        'android' => [
+                            'priority' => 'high',
+                            'notification' => [
+                                'title' => 'Actualización disponible',
+                                'body' => 'Se actualizó la lista #' . ($data['id_lista'] ?? '¿?') . '.',
+                            ],
+                        ],
+                    ],
+                ];
+                break;
+        }
         try {
             $response = Http::withToken($this->accessToken)
                 ->post($url, $payload);
 
             if ($response->successful()) {
-                Log::info('✅ Notificación enviada correctamente al topic: ' . $topic, $response->json());
+                Log::info('✅ Notificación enviada correctamente al topic: ' . $topic, ['response' => $response->json()]);
             } else {
                 Log::error('❌ Error al enviar notificación al topic: ' . $topic, [
                     'status' => $response->status(),
@@ -89,3 +108,7 @@ class FirebaseNotificationService
 //                     'body' => 'Se actualizó la lista #'.($data['id_lista'] ?? '¿?').'.',
 //                 ],
 //             ],
+
+// 'android' => [
+//                     'priority' => 'high',
+//                 ],

@@ -34,7 +34,7 @@ class TarjetaObserver
         $this->firebaseService->sendToTopic('actualizaciones', [
             'accion' => 'tarjeta_eliminada',
             'id' => $tarjeta->id,
-            'id_lista' => (string)$tarjeta->id_padre, // <-- CAMBIO
+            'id_lista' => (string)$tarjeta->id_padre,
         ]);
     }
 
@@ -44,9 +44,10 @@ class TarjetaObserver
             'accion' => $accion,
             'id' => $tarjeta->id,
             'titulo' => $tarjeta->titulo ?? '',
-            'id_lista' => (string)($tarjeta->id_padre ?? ''), // <-- CAMBIO CLAVE
+            'id_lista' => (string)($tarjeta->id_padre ?? ''),
         ];
 
+        $this->firebaseService->sendToTopic('actualizaciones_ios', $payload);
         $this->firebaseService->sendToTopic('actualizaciones', $payload);
     }
 }
