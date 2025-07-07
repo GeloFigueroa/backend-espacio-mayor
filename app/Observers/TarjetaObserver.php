@@ -30,29 +30,23 @@ class TarjetaObserver
     public function deleted(Tarjeta $tarjeta): void
     {
         Log::info('Observer: Tarjeta eliminada con ID ' . $tarjeta->id);
-        // Para deleted, es mejor no enviar todo el objeto, solo su ID
+
         $this->firebaseService->sendToTopic('actualizaciones', [
             'accion' => 'tarjeta_eliminada',
             'id' => $tarjeta->id,
-            'id_padre' => $tarjeta->id_padre, // Para saber qué lista refrescar
+            'id_lista' => (string)$tarjeta->id_padre, // <-- CAMBIO
         ]);
     }
 
-    /**
-     * Helper para enviar la notificación.
-     */
     private function sendNotification(string $accion, Tarjeta $tarjeta): void
     {
-        // El 'payload' es el conjunto de datos que recibirá tu app Flutter
         $payload = [
             'accion' => $accion,
             'id' => $tarjeta->id,
             'titulo' => $tarjeta->titulo ?? '',
-            'id_padre' => $tarjeta->id_padre ?? '',
-            // Puedes añadir cualquier otro campo que necesites en la app
+            'id_lista' => (string)($tarjeta->id_padre ?? ''), // <-- CAMBIO CLAVE
         ];
 
-        // Usamos el servicio para enviar la notificación al topic 'actualizaciones'
         $this->firebaseService->sendToTopic('actualizaciones', $payload);
     }
 }

@@ -34,24 +34,24 @@ class FirebaseNotificationService
         $projectId = env('FIREBASE_PROJECT_ID');
         $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
 
-        // Aseguramos que todos los valores en el payload de datos sean strings
         $stringData = array_map('strval', $data);
 
         $payload = [
             'message' => [
                 'topic' => $topic,
-                'data' => [
-                    'accion' => 'actualizar',
-                    'tipo' => 'silenciosa'
-                ],
+                'data' => $stringData,
                 'apns' => [
                     'headers' => [
-                        'apns-priority' => '5',
-                        'apns-push-type' => 'background',
+                        'apns-priority' => '10',
+                        'apns-push-type' => 'alert',
                     ],
                     'payload' => [
                         'aps' => [
-                            'content-available' => 1,
+                            'alert' => [
+                                'title' => 'hay una nueva tarjeta',
+                                'body' => 'Se actualizó la lista #' . ($data['id_lista'] ?? '¿?') . '.',
+                            ],
+                            'sound' => 'default',
                         ],
                     ],
                 ],
@@ -60,7 +60,6 @@ class FirebaseNotificationService
                 ],
             ],
         ];
-
 
         try {
             $response = Http::withToken($this->accessToken)
@@ -81,3 +80,12 @@ class FirebaseNotificationService
         }
     }
 }
+
+
+// 'android' => [
+//                 'priority' => 'high',
+//                 'notification' => [
+//                     'title' => 'Actualización disponible',
+//                     'body' => 'Se actualizó la lista #'.($data['id_lista'] ?? '¿?').'.',
+//                 ],
+//             ],
