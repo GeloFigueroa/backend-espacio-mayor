@@ -65,6 +65,8 @@ class TarjetaController extends Controller
                     'diseno_tarjeta'    => $diseno,
                     'contenido'         => $contenido,
                     'nuevoTicket'       => false,
+                    'contenido_puntos'  => [],
+                    'boton_accion'      => false,
                 ]
             );
 
@@ -91,82 +93,65 @@ class TarjetaController extends Controller
         });
     }
 
-    // En tu TarjetaController.php
 
-public function update(StoreTarjetaRequest $request, $id)
-{
-    // MEJORA: findOrFail se encarga de buscar la tarjeta o devolver un error 404 si no existe.
-    $tarjeta = Tarjeta::findOrFail($id);
-    $validatedData = $request->validated();
+    public function update(StoreTarjetaRequest $request, $id)
+    {
+        $tarjeta = Tarjeta::findOrFail($id);
+        $validatedData = $request->validated();
 
-    try {
-        // La transacción se mantiene, ¡excelente práctica!
-        $updatedTarjeta = DB::transaction(function () use ($tarjeta, $validatedData) {
-            
-            // MEJORA: Simplificamos radicalmente la asignación de datos.
-            // Eloquent es lo suficientemente inteligente como para solo actualizar los campos
-            // que vienen en el array $validatedData y que están en la propiedad $fillable del modelo.
-            $dataParaActualizar = $validatedData;
-            
-            // --- INICIO DE LA LÓGICA DE LISTA REFACTORIZADA ---
-            
-            // Obtenemos el contenido actual para no perder datos que no se actualizan (como 'url').
-            $currentContenido = $tarjeta->contenido ?? [];
-            if (isset($validatedData['contenido'])) {
-                $currentContenido = array_merge($currentContenido, $validatedData['contenido']);
-            }
+        try {
+            $updatedTarjeta = DB::transaction(function () use ($tarjeta, $validatedData) {
+                $dataParaActualizar = $validatedData;
 
-            // Determinamos cuál será el tipo de contenido final de la tarjeta.
-            $tipoContenidoFinal = $validatedData['tipo_contenido'] ?? $tarjeta->tipo_contenido;
-
-            // La misma lógica inteligente que en 'store': ¿el tipo de contenido es de los que usan listas?
-            if (in_array($tipoContenidoFinal, Tarjeta::$listBasedContentTypes)) {
-                
-                $idListaExistente = $tarjeta->contenido['id_lista'] ?? null;
-                $lista = $idListaExistente ? Lista::find($idListaExistente) : null;
-                
-                $datosLista = [
-                    'tituloTarjeta' => $validatedData['titulo'] ?? $tarjeta->titulo,
-                    'tipoLista'     => $validatedData['contenido']['tipo_lista'] ?? ($lista->tipoLista ?? Tarjeta::TIPO_BASICA)
-                ];
-
-                if ($lista) {
-                    $lista->update($datosLista);
-                } else {
-                    $lista = Lista::create($datosLista);
+                $currentContenido = $tarjeta->contenido ?? [];
+                if (isset($validatedData['contenido'])) {
+                    $currentContenido = array_merge($currentContenido, $validatedData['contenido']);
                 }
-                
-                // Asignamos la información de la lista al contenido.
-                $currentContenido['id_lista'] = $lista->id;
-                $currentContenido['tipo_lista'] = $lista->tipoLista;
-            } else {
-                // Si NO es un tipo de lista, nos aseguramos de limpiar la información de la lista.
-                $currentContenido['id_lista'] = null;
-                $currentContenido['tipo_lista'] = null;
-            }
 
-            // Asignamos el array de contenido, ya procesado, a los datos para actualizar.
-            $dataParaActualizar['contenido'] = $currentContenido;
-            
-            // --- FIN DE LA LÓGICA REFACTORIZADA ---
+                $tipoContenidoFinal = $validatedData['tipo_contenido'] ?? $tarjeta->tipo_contenido;
 
-            $tarjeta->update($dataParaActualizar);
-            return $tarjeta;
-        });
+                if (in_array($tipoContenidoFinal, Tarjeta::$listBasedContentTypes)) {
 
-        return response()->json([
-            'message' => 'Tarjeta actualizada correctamente.',
-            'data'    => $updatedTarjeta->load('lista'),
-            'status'  => 200
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'message' => 'Error al actualizar la tarjeta.',
-            'error'   => $e->getMessage(),
-            'status'  => 500
-        ]);
+                    $idListaExistente = $tarjeta->contenido['id_lista'] ?? null;
+                    $lista = $idListaExistente ? Lista::find($idListaExistente) : null;
+
+                    $datosLista = [
+                        'tituloTarjeta' => $validatedData['titulo'] ?? $tarjeta->titulo,
+                        'tipoLista'     => $validatedData['contenido']['tipo_lista'] ?? ($lista->tipoLista ?? Tarjeta::TIPO_BASICA)
+                    ];
+
+                    if ($lista) {
+                        $lista->update($datosLista);
+                    } else {
+                        $lista = Lista::create($datosLista);
+                    }
+
+                    $currentContenido['id_lista'] = $lista->id;
+                    $currentContenido['tipo_lista'] = $lista->tipoLista;
+                } else {
+                    $currentContenido['id_lista'] = null;
+                    $currentContenido['tipo_lista'] = null;
+                }
+
+                $dataParaActualizar['contenido'] = $currentContenido;
+
+                $tarjeta->update($dataParaActualizar);
+                return $tarjeta;
+            });
+
+            return response()->json([
+                'message' => 'Tarjeta actualizada correctamente.',
+                'data'    => $updatedTarjeta->load('lista'),
+                'status'  => 200
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al actualizar la tarjeta.',
+                'error'   => $e->getMessage(),
+                'status'  => 500
+            ]);
+        }
     }
-}
 
     public function destroy($id)
     {
@@ -263,8 +248,6 @@ public function update(StoreTarjetaRequest $request, $id)
             Tarjeta::LISTADO_TARJETAS
         );
     }
-
-    //Sector de peticones de tarjetas
 
     public function getTarjetaPagoServicios()
     {

@@ -26,6 +26,10 @@ class StoreTarjetaRequest extends FormRequest
             'firma' => 'nullable|string|max:255',
             'georeferenciacion' => 'nullable|string',
             'fecha_expiracion' => 'nullable|date',
+            'contenido_puntos' => 'nullable|array',
+            'contenido_puntos.*' => 'string|max:255', 
+
+            'boton_accion' => 'nullable|boolean',
 
             'diseno_tarjeta' => [
                 $isCreate ? 'required' : 'sometimes',

@@ -59,13 +59,17 @@ class Tarjeta extends Model
         'id_padre',
         'tipo_contenido',
         'contenido',
+        'contenido_puntos',
+        'boton_accion',
         'position',
     ];
 
     protected $casts = [
         'contenido' => 'array',
+        'contenido_puntos' => 'array',
         'fecha_expiracion' => 'datetime',
         'nuevoTicket' => 'boolean',
+        'boton_accion' => 'boolean',
     ];
 
     protected static function booted(): void
