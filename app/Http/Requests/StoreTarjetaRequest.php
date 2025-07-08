@@ -25,9 +25,12 @@ class StoreTarjetaRequest extends FormRequest
             'imagenURL' => 'nullable|string|max:3000',
             'firma' => 'nullable|string|max:255',
             'georeferenciacion' => 'nullable|string',
+            'titulo_bajada_uno' => 'nullable|string|max:255',
             'fecha_expiracion' => 'nullable|date',
             'contenido_puntos' => 'nullable|array',
-            'contenido_puntos.*' => 'string|max:255', 
+            'contenido_puntos.*' => 'string|max:255',
+            'titulo_bajada_dos' => 'nullable|string|max:255',
+            'contenido_bajada_dos' => 'nullable|string|max:3000',
 
             'boton_accion' => 'nullable|boolean',
 

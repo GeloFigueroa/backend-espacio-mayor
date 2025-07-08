@@ -59,7 +59,10 @@ class Tarjeta extends Model
         'id_padre',
         'tipo_contenido',
         'contenido',
+        'titulo_bajada_uno',
         'contenido_puntos',
+        'titulo_bajada_dos',
+        'contenido_bajada_dos',
         'boton_accion',
         'position',
     ];
