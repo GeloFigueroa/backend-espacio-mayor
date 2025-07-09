@@ -47,14 +47,13 @@ class FirebaseNotificationService
                         'topic' => $topic,
                         'data' => $stringData,
                         'apns' => [
+                            'headers' => [
+                                'apns-priority' => '5',
+                            ],
                             'payload' => [
                                 'aps' => [
-                                    'alert' => [
-                                        'title' => 'Actualización para iOS ',
-                                        'body' => 'Hay nuevo contenido disponible en la lista ' . ($data['lista_titulo'] ?? ''),
-                                    ],
-                                    'sound' => 'default',
                                     'content-available' => 1,
+                                    'mutable-content' => 1,
                                 ],
                             ],
                         ],
@@ -70,11 +69,7 @@ class FirebaseNotificationService
                         'topic' => $topic,
                         'data' => $stringData,
                         'android' => [
-                            'priority' => 'high',
-                            'notification' => [
-                                'title' => 'Actualización disponible',
-                                'body' => 'Se actualizó la lista #' . ($data['id_lista'] ?? '¿?') . '.',
-                            ],
+                            'priority' => 'high'
                         ],
                     ],
                 ];
