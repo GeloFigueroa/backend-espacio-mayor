@@ -20,6 +20,8 @@ Route::get('/listas/ids/todas', [ListaController::class, 'getAllIds']);
 
 Route::get('/centros-de-salud', [CentroDeSaludController::class, 'index']);
 
+Route::post('/tarjetas/check-updates', [TarjetaController::class, 'checkUpdates']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user', function (Request $request) {

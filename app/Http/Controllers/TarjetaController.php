@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Lista;
 use App\Http\Requests\StoreTarjetaRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class TarjetaController extends Controller
 {
@@ -350,6 +352,32 @@ class TarjetaController extends Controller
         return response()->json([
             'message' => 'El orden de las tarjetas ha sido actualizado correctamente.',
             'status' => 200,
+        ]);
+    }
+
+    public function checkUpdates(Request $request)
+    {
+        $request->validate([
+            'last_updated_at' => 'required|date',
+        ]);
+
+        $clientLastUpdate = Carbon::parse($request->input('last_updated_at'));
+
+        // Si la fecha es del futuro, forzar retorno false
+        if ($clientLastUpdate->greaterThan(Carbon::now())) {
+            return response()->json([
+                'needs_update' => false,
+                'server_timestamp' => Carbon::now()->toIso8601String(),
+            ]);
+        }
+
+        $serverLastUpdate = Carbon::parse(Cache::get('last_tarjeta_update_timestamp', '2000-01-01 00:00:00'));
+
+        $needsUpdate = $serverLastUpdate->isAfter($clientLastUpdate);
+
+        return response()->json([
+            'needs_update' => $needsUpdate,
+            'server_timestamp' => $serverLastUpdate->toIso8601String(),
         ]);
     }
 }
