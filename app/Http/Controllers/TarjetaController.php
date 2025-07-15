@@ -336,7 +336,7 @@ class TarjetaController extends Controller
         $validated = $request->validate([
             'id_padre' => 'required|integer|exists:listas,id',
             'ordered_ids' => 'required|array',
-            'ordered_ids.*' => 'integer|exists:exists:listas,id',
+            'ordered_ids.*' => 'integer|exists:tarjetas,id',
         ]);
 
         DB::transaction(function () use ($validated) {
