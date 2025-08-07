@@ -47,6 +47,12 @@ class TarjetaController extends Controller
                 'status'  => 201
             ], 201);
         } catch (\Exception $e) {
+            Log::error('Error al crear la tarjeta', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+
             return response()->json([
                 'message' => 'Error al crear la tarjeta.',
                 'error'   => $e->getMessage(),

@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Tarjeta;
 use Illuminate\Validation\Rule;
+use App\Enums\RegionChileEnum;
 
 
 class StoreTarjetaRequest extends FormRequest
@@ -24,7 +25,7 @@ class StoreTarjetaRequest extends FormRequest
             'color' => 'nullable|string|max:255',
             'imagenURL' => 'nullable|string|max:3000',
             'firma' => 'nullable|string|max:255',
-            'georeferenciacion' => 'nullable|string',
+            'georeferenciacion' => 'nullable|boolean',
             'titulo_bajada_uno' => 'nullable|string|max:255',
             'fecha_expiracion' => 'nullable|date',
             'contenido_puntos' => 'nullable|array',
@@ -55,6 +56,12 @@ class StoreTarjetaRequest extends FormRequest
                 Rule::in(Tarjeta::$disenoTarjetasPermitidos),
             ],
             'contenido.url' => 'nullable|url',
+
+            'etiqueta_regiones_visualizacion' => 'nullable|array',
+            'etiqueta_regiones_visualizacion.*' => [
+                'string',
+                Rule::enum(RegionChileEnum::class)
+            ],
         ];
     }
 }

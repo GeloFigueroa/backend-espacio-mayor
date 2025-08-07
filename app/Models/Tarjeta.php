@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\RegionChileEnum;
+use Illuminate\Database\Eloquent\Casts\AsEnumArrayObject;
 use Illuminate\Database\Eloquent\Model;
 
 class Tarjeta extends Model
@@ -65,6 +67,7 @@ class Tarjeta extends Model
         'contenido_bajada_dos',
         'boton_accion',
         'position',
+        'etiqueta_regiones_visualizacion',
     ];
 
     protected $casts = [
@@ -73,7 +76,9 @@ class Tarjeta extends Model
         'fecha_expiracion' => 'datetime',
         'nuevoTicket' => 'boolean',
         'boton_accion' => 'boolean',
+        'etiqueta_regiones_visualizacion' => AsEnumArrayObject::class . ':' . RegionChileEnum::class,
     ];
+    
 
     protected static function booted(): void
     {
