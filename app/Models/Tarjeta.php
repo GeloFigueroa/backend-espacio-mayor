@@ -33,6 +33,7 @@ class Tarjeta extends Model
     const PAGO_DE_SERVICIO = 'pagoDeServicio';
     const CENTRO_DE_SALUD = 'centroDeSalud';
     const MEDIOS_DE_TRANSPORTE = 'mediosDeTransporte';
+    const BOTON_VER_GUIA = 'botonVerGuia';
 
 
     public static $tiposContenidoPermitidos = [
@@ -45,6 +46,7 @@ class Tarjeta extends Model
         self::PAGO_DE_SERVICIO,
         self::CENTRO_DE_SALUD,
         self::MEDIOS_DE_TRANSPORTE,
+        self::BOTON_VER_GUIA,
 
     ];
 
