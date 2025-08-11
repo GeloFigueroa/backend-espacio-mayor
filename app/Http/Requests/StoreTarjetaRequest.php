@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use App\Models\Tarjeta;
 use Illuminate\Validation\Rule;
 use App\Enums\RegionChileEnum;
+use App\Enums\ComunaChileEnum;
 
 
 class StoreTarjetaRequest extends FormRequest
@@ -61,6 +62,12 @@ class StoreTarjetaRequest extends FormRequest
             'etiqueta_regiones_visualizacion.*' => [
                 'string',
                 Rule::enum(RegionChileEnum::class)
+            ],
+            
+            'etiqueta_comunas_visualizacion' => 'nullable|array',
+            'etiqueta_comunas_visualizacion.*' => [
+                'string',
+                Rule::enum(ComunaChileEnum::class)
             ],
         ];
     }
