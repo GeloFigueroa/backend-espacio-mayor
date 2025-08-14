@@ -39,3 +39,4 @@ class UpdateTipoContenidoPermitidoInTuTabla extends Migration
     }
 }
 
+
