@@ -58,6 +58,7 @@ class Tarjeta extends Model
         'imagenURL',
         'firma',
         'georeferenciacion',
+        'georeferenciacion_bool',
         'fecha_expiracion',
         'diseno_tarjeta',
         'nuevoTicket',
@@ -80,6 +81,7 @@ class Tarjeta extends Model
         'fecha_expiracion' => 'datetime',
         'nuevoTicket' => 'boolean',
         'boton_accion' => 'boolean',
+        'georeferenciacion_bool' => 'boolean',
         'etiqueta_regiones_visualizacion' => AsEnumArrayObject::class . ':' . RegionChileEnum::class,
         'etiqueta_comunas_visualizacion' => AsEnumArrayObject::class . ':' . ComunaChileEnum::class,
     ];
