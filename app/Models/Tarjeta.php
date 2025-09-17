@@ -37,6 +37,8 @@ class Tarjeta extends Model
     const BOTON_VER_GUIA = 'botonVerGuia';
     const PUNTO_CARGA_BIP = 'puntoCargaBip';
     const CHILE_CULTURA = 'chileCultura';
+    const ABASTIBLE = 'abastible';
+    const LIPIGAS = 'lipigas';
 
 
     public static $tiposContenidoPermitidos = [
@@ -52,6 +54,8 @@ class Tarjeta extends Model
         self::BOTON_VER_GUIA,
         self::PUNTO_CARGA_BIP,
         self::CHILE_CULTURA,
+        self::ABASTIBLE,
+        self::LIPIGAS,
     ];
 
     protected $fillable = [
