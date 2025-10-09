@@ -16,13 +16,15 @@ class Tarjeta extends Model
     const TIPO_GRANDE = 'tarjetaGrande';
     const INFO_AYUDA = 'infoAyuda';
     const TIPO_YOUTUBE = 'tarjetasYoutube';
+    const TIPO_BANNER = 'tarjetasBanner';
 
     public static $disenoTarjetasPermitidos = [
         self::TIPO_BASICA,
         self::TIPO_MEDIANA,
         self::TIPO_GRANDE,
         self::INFO_AYUDA,
-        self::TIPO_YOUTUBE
+        self::TIPO_YOUTUBE,
+        self::TIPO_BANNER,
     ];
 
     const WEB_VIEW = 'webView';
