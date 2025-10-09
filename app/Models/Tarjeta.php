@@ -6,9 +6,11 @@ use App\Enums\ComunaChileEnum;
 use App\Enums\RegionChileEnum;
 use Illuminate\Database\Eloquent\Casts\AsEnumArrayObject;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tarjeta extends Model
 {
+    use HasFactory;
     protected $table = 'tarjetas';
 
     const TIPO_BASICA = 'tarjetaBasica';

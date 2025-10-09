@@ -14,13 +14,13 @@ class NotificarTarjetasPorVencer extends Command
 
     public function handle()
     {
-        $diasAntes = 1; // ejemplo: notificar 1 días antes
+        $diasAntes = 1; 
         $fechaObjetivo = now()->addDays($diasAntes)->toDateString();
 
         $tarjetas = Tarjeta::whereDate('fecha_expiracion', '=', $fechaObjetivo)->get();
 
         foreach ($tarjetas as $tarjeta) {
-            Mail::to('oleax28@gmail.com')
+            Mail::to(['gfiguero@conectamayor.cl', 'gelofiguero@gmail.com',])
                 ->send(new TarjetaPorVencerMail($tarjeta));
 
             $this->info("Correo enviado para tarjeta ID {$tarjeta->id}");
