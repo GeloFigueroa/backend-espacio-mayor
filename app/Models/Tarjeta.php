@@ -18,7 +18,6 @@ class Tarjeta extends Model
     const TIPO_GRANDE = 'tarjetaGrande';
     const INFO_AYUDA = 'infoAyuda';
     const TIPO_YOUTUBE = 'tarjetasYoutube';
-    const TIPO_BANNER = 'tarjetaBanner';
 
     public static $disenoTarjetasPermitidos = [
         self::TIPO_BASICA,
@@ -26,7 +25,6 @@ class Tarjeta extends Model
         self::TIPO_GRANDE,
         self::INFO_AYUDA,
         self::TIPO_YOUTUBE,
-        self::TIPO_BANNER,
     ];
 
     const WEB_VIEW = 'webView';
@@ -43,6 +41,8 @@ class Tarjeta extends Model
     const CHILE_CULTURA = 'chileCultura';
     const ABASTIBLE = 'abastible';
     const LIPIGAS = 'lipigas';
+    const TIPO_BANNER = 'tarjetaBanner';
+
 
 
     public static $tiposContenidoPermitidos = [
@@ -60,6 +60,7 @@ class Tarjeta extends Model
         self::CHILE_CULTURA,
         self::ABASTIBLE,
         self::LIPIGAS,
+        self::TIPO_BANNER,
     ];
 
     protected $fillable = [
