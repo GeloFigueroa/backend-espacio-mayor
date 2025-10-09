@@ -6,6 +6,7 @@ namespace App\Enums;
 enum ComunaChileEnum: string
 {
     case SANTIAGO = 'santiago';
+    case ALHUE = 'alhue';
     case CERRO_NAVIA = 'cerro_navia';
     case EL_BOSQUE = 'el_bosque';
     case HUECHURABA = 'huechuraba';
