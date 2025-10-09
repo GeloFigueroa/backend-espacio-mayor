@@ -41,7 +41,7 @@ class Tarjeta extends Model
     const CHILE_CULTURA = 'chileCultura';
     const ABASTIBLE = 'abastible';
     const LIPIGAS = 'lipigas';
-    const TIPO_BANNER = 'tarjetaBanner';
+    const TIPO_BANNER = 'banner';
 
 
 
