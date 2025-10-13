@@ -34,7 +34,7 @@ class StoreTarjetaRequest extends FormRequest
             'contenido_puntos.*' => 'string|max:255',
             'titulo_bajada_dos' => 'nullable|string|max:255',
             'contenido_bajada_dos' => 'nullable|string|max:3000',
-
+            'banner' => 'nullable|boolean',
             'boton_accion' => 'nullable|boolean',
 
             'diseno_tarjeta' => [

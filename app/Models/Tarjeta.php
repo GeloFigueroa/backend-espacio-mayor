@@ -85,6 +85,7 @@ class Tarjeta extends Model
         'position',
         'etiqueta_regiones_visualizacion',
         'etiqueta_comunas_visualizacion',
+        'banner'
     ];
 
     protected $casts = [
@@ -94,6 +95,7 @@ class Tarjeta extends Model
         'nuevoTicket' => 'boolean',
         'boton_accion' => 'boolean',
         'georeferenciacion_bool' => 'boolean',
+        'banner' => 'boolean',
         'etiqueta_regiones_visualizacion' => AsEnumArrayObject::class . ':' . RegionChileEnum::class,
         'etiqueta_comunas_visualizacion' => AsEnumArrayObject::class . ':' . ComunaChileEnum::class,
     ];
