@@ -6,9 +6,11 @@ use App\Enums\ComunaChileEnum;
 use App\Enums\RegionChileEnum;
 use Illuminate\Database\Eloquent\Casts\AsEnumArrayObject;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Tarjeta extends Model
 {
+    use HasFactory;
     protected $table = 'tarjetas';
 
     const TIPO_BASICA = 'tarjetaBasica';
@@ -16,7 +18,6 @@ class Tarjeta extends Model
     const TIPO_GRANDE = 'tarjetaGrande';
     const INFO_AYUDA = 'infoAyuda';
     const TIPO_YOUTUBE = 'tarjetasYoutube';
-    const TIPO_BANNER = 'tarjetasBanner';
 
     public static $disenoTarjetasPermitidos = [
         self::TIPO_BASICA,
@@ -24,7 +25,6 @@ class Tarjeta extends Model
         self::TIPO_GRANDE,
         self::INFO_AYUDA,
         self::TIPO_YOUTUBE,
-        self::TIPO_BANNER,
     ];
 
     const WEB_VIEW = 'webView';
@@ -41,6 +41,7 @@ class Tarjeta extends Model
     const CHILE_CULTURA = 'chileCultura';
     const ABASTIBLE = 'abastible';
     const LIPIGAS = 'lipigas';
+
 
 
     public static $tiposContenidoPermitidos = [
@@ -82,6 +83,7 @@ class Tarjeta extends Model
         'position',
         'etiqueta_regiones_visualizacion',
         'etiqueta_comunas_visualizacion',
+        'banner'
     ];
 
     protected $casts = [
@@ -91,6 +93,7 @@ class Tarjeta extends Model
         'nuevoTicket' => 'boolean',
         'boton_accion' => 'boolean',
         'georeferenciacion_bool' => 'boolean',
+        'banner' => 'boolean',
         'etiqueta_regiones_visualizacion' => AsEnumArrayObject::class . ':' . RegionChileEnum::class,
         'etiqueta_comunas_visualizacion' => AsEnumArrayObject::class . ':' . ComunaChileEnum::class,
     ];
