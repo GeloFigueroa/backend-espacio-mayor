@@ -22,7 +22,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('notificar:notificar-por-vencer')->dailyAt('08:30');
+        $schedule->command('notificar:notificar-por-vencer')->dailyAt('11:30');
         $schedule->command('tarjetas:eliminar-expiradas')->hourly();    
     }
 
