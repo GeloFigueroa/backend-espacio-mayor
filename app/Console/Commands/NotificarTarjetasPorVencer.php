@@ -20,7 +20,7 @@ class NotificarTarjetasPorVencer extends Command
         $tarjetas = Tarjeta::whereDate('fecha_expiracion', '=', $fechaObjetivo)->get();
 
         foreach ($tarjetas as $tarjeta) {
-            Mail::to(['gfiguero@conectamayor.cl', 'gelofiguero@gmail.com',])
+            Mail::to(['gfigueroa@conectamayor.cl', 'gelofiguer@gmail.com',])
                 ->send(new TarjetaPorVencerMail($tarjeta));
 
             $this->info("Correo enviado para tarjeta ID {$tarjeta->id}");
