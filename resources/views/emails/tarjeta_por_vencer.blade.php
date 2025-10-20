@@ -9,6 +9,5 @@ Por favor, asegúrate de tomar las medidas necesarias antes de su fecha de venci
 Ver Tarjetas
 </x-mail::button>
 
-Gracias por confiar en **Espacio Mayor**.<br>
 **El equipo de Espacio Mayor**
 </x-mail::message>
