@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ListaController;
 use App\Http\Controllers\CentroDeSaludController;
 use App\Http\Controllers\TarjetaController;
+use App\Http\Controllers\NotificacionesController;
 
 //Login
 Route::post('/login', [AuthController::class, 'login']);
@@ -24,6 +25,8 @@ Route::get('/centros-de-salud', [CentroDeSaludController::class, 'index']);
 Route::post('/tarjetas/check-updates', [TarjetaController::class, 'checkUpdates']);
 
 
+Route::post('notificaciones/enviar', [NotificacionesController::class, 'enviar']);
+
 Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/user', function (Request $request) {
@@ -39,4 +42,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/tarjetas/{id}', [TarjetaController::class, 'destroy']);
     Route::post('/tarjetas/update-order', [TarjetaController::class, 'updateOrder']);
     Route::post('/tarjetas', [TarjetaController::class, 'store']);
+    
+
 });
