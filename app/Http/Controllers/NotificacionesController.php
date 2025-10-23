@@ -123,6 +123,7 @@ class NotificacionesController extends Controller
                 'data' => [
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                     'screen'       => $request->click_action ?? '/centronoti',
+                    'image'        => $request->image ?? '',
                 ],
             ]),
         ];
