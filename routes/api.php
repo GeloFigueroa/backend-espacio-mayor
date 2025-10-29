@@ -7,6 +7,7 @@ use App\Http\Controllers\ListaController;
 use App\Http\Controllers\CentroDeSaludController;
 use App\Http\Controllers\TarjetaController;
 use App\Http\Controllers\NotificacionesController;
+use App\Http\Controllers\Api\CuponController;
 
 //Login
 Route::post('/login', [AuthController::class, 'login']);
@@ -26,6 +27,13 @@ Route::post('/tarjetas/check-updates', [TarjetaController::class, 'checkUpdates'
 
 
 Route::post('notificaciones/enviar', [NotificacionesController::class, 'enviar']);
+
+
+Route::prefix('cupones')->group(function () {
+    Route::get('/disponible', [CuponController::class, 'disponible']);   // entrega 1 cupón libre
+    Route::post('/usar', [CuponController::class, 'usar']);              // marca usado
+    // Route::post('/reset', [CuponController::class, 'reset'])->middleware('auth:sanctum'); // solo admin
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     
