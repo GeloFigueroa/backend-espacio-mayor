@@ -18,3 +18,5 @@ class Cupon extends Model
         'fecha_uso' => 'datetime',
     ];
 }
+
+

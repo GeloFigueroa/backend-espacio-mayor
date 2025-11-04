@@ -9,18 +9,21 @@ class CuponesSeeder extends Seeder
 {
     public function run(): void
     {
-        $path = base_path('database/seeders/data/codigos_starbucks.json'); // colócalo ahí
-        $items = json_decode(file_get_contents($path), true);
+        $path = base_path('database/seeders/data/codigos_starbucks.json');
+        $data = json_decode(file_get_contents($path), true);
 
-        foreach ($items as $row) {
+        foreach ($data as $item) {
             Cupon::firstOrCreate(
-                ['codigo' => $row['codigo']],
+                ['codigo' => $item['codigo']],
                 [
-                    'descripcion' => $row['descripcion'] ?? null,
-                    'lote'        => $row['lote'] ?? null,
-                    'usado'       => false,
+                    'descripcion' => $item['descripcion'] ?? null,
+                    'lote' => 'Inicial',
+                    'usado' => false,
                 ]
             );
         }
+
+        $count = Cupon::count();
+        $this->command->info("✅ Se cargaron $count cupones de Starbucks correctamente.");
     }
 }

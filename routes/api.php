@@ -35,6 +35,7 @@ Route::prefix('cupones')->group(function () {
     // Route::post('/reset', [CuponController::class, 'reset'])->middleware('auth:sanctum'); // solo admin
 });
 
+
 Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/user', function (Request $request) {

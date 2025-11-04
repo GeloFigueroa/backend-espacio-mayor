@@ -11,24 +11,31 @@ use Illuminate\Validation\ValidationException;
 class CuponController extends Controller
 {
     // GET /api/cupones/disponible
-    public function disponible(Request $request)
-    {
-        // Opcional: por usuario (ej: límite 1 por día)
-        // $usuarioId = $request->user()?->id ?? $request->input('usuario_id');
+   public function disponible(Request $request)
+{
+    $rut = $request->input('rut'); // lo puedes mandar desde Flutter
 
-        $cupon = Cupon::where('usado', false)->first();
+    // Busca un cupón libre
+    $cupon = Cupon::where('usado', false)->inRandomOrder()->lockForUpdate()->first();
 
-        if (!$cupon) {
-            return response()->json(['message' => 'No hay cupones disponibles'], 404);
-        }
-
-        return response()->json([
-            'id'          => $cupon->id,
-            'codigo'      => $cupon->codigo,
-            'descripcion' => $cupon->descripcion,
-            'lote'        => $cupon->lote,
-        ]);
+    if (!$cupon) {
+        return response()->json(['message' => 'No hay cupones disponibles'], 404);
     }
+
+    // Lo marca como reservado/entregado
+    $cupon->update([
+        'usado' => true,
+        'rut' => $rut,
+        'fecha_uso' => now(),
+    ]);
+
+    return response()->json([
+        'id' => $cupon->id,
+        'codigo' => $cupon->codigo,
+        'descripcion' => $cupon->descripcion,
+    ]);
+}
+
 
     // POST /api/cupones/usar { codigo, usuario_id? }
     public function usar(Request $request)
