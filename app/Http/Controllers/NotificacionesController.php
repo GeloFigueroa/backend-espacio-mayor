@@ -106,27 +106,26 @@ class NotificacionesController extends Controller
         }
 
         // Construir payload FCM
-        $payload = [
-            'message' => array_merge($target, [
-                'notification' => [
-                    'title' => $request->title,
-                    'body'  => $request->body,
-                ],
-                'android' => [
-                    'priority' => 'high',
-                    'notification' => [
-                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                        'icon' => 'ic_launcher',
-                        'color' => '#1B255D',
-                    ],
-                ],
-                'data' => [
-                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                    'screen'       => $request->click_action ?? '/centronoti',
-                    'image'        => $request->image ?? '',
-                ],
-            ]),
-        ];
+       $payload = [
+    'message' => array_merge($target, [
+
+        // 🔥 SOLO DATA (esto obliga a Android a entregar el mensaje a tu handler)
+        'data' => [
+            'title'       => $request->title ?? '',
+            'body'        => $request->body ?? '',
+            'screen'      => $request->click_action ?? 'centronoti',
+            'channel_id'  => 'canal_principal',
+            'icon'        => 'ic_launcher',
+            'color'       => '#1B255D',
+        ],
+
+        // Opcional, pero no debe contener "notification"
+        'android' => [
+            'priority' => 'high',
+        ],
+    ]),
+];
+
 
         // Enviar
         $url = "https://fcm.googleapis.com/v1/projects/{$projectId}/messages:send";
