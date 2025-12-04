@@ -106,23 +106,60 @@ class NotificacionesController extends Controller
         }
 
         // Construir payload FCM
-       $payload = [
+      // Construir payload FCM FINAL COMPATIBLE
+$payload = [
     'message' => array_merge($target, [
 
-        // 🔥 SOLO DATA (esto obliga a Android a entregar el mensaje a tu handler)
-        'data' => [
-            'title'       => $request->title ?? '',
-            'body'        => $request->body ?? '',
-            'screen'      => $request->click_action ?? 'centronoti',
-            'channel_id'  => 'canal_principal',
-            'icon'        => 'ic_launcher',
-            'color'       => '#1B255D',
+        // ---------------------------------------------------------
+        // 1) 🔥 BLOQUE OBLIGATORIO PARA iOS cuando la app está cerrada
+        // ---------------------------------------------------------
+        'notification' => [
+            'title' => $request->title ?? '',
+            'body'  => $request->body ?? '',
         ],
 
-        // Opcional, pero no debe contener "notification"
+        // ---------------------------------------------------------
+        // 2) 🔥 SOLO DATA (Android usa esto SIEMPRE, iOS lo usa en foreground)
+        // ---------------------------------------------------------
+        'data' => [
+            'title'      => $request->title ?? '',
+            'body'       => $request->body ?? '',
+            'screen'     => $request->click_action ?? 'centronoti',
+            'channel_id' => 'canal_principal',
+            'icon'       => 'ic_launcher',
+            'color'      => '#1B255D',
+        ],
+
+        // ---------------------------------------------------------
+        // 3) Configuración Android
+        // ---------------------------------------------------------
         'android' => [
             'priority' => 'high',
+            'notification' => [
+                'channel_id' => 'canal_principal',
+                'icon'       => 'ic_launcher',
+                'color'      => '#1B255D',
+            ],
         ],
+
+        // ---------------------------------------------------------
+        // 4) Configuración iOS (APNs)
+        // ---------------------------------------------------------
+        'apns' => [
+            'headers' => [
+                'apns-priority' => '10',
+            ],
+            'payload' => [
+                'aps' => [
+                    'alert' => [
+                        'title' => $request->title ?? '',
+                        'body'  => $request->body ?? '',
+                    ],
+                    'sound' => 'default',
+                ],
+            ],
+        ],
+
     ]),
 ];
 
