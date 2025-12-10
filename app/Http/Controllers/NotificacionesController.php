@@ -109,18 +109,12 @@ class NotificacionesController extends Controller
       // Construir payload FCM FINAL COMPATIBLE
 $payload = [
     'message' => array_merge($target, [
-
-        // ---------------------------------------------------------
-        // 1) 🔥 BLOQUE OBLIGATORIO PARA iOS cuando la app está cerrada
-        // ---------------------------------------------------------
+        // 1)  Notificación visible (solo se manda una vez)
         'notification' => [
             'title' => $request->title ?? '',
             'body'  => $request->body ?? '',
         ],
-
-        // ---------------------------------------------------------
-        // 2) 🔥 SOLO DATA (Android usa esto SIEMPRE, iOS lo usa en foreground)
-        // ---------------------------------------------------------
+        // 2)  Data necesaria para navegación y Android
         'data' => [
             'title'      => $request->title ?? '',
             'body'       => $request->body ?? '',
@@ -129,10 +123,7 @@ $payload = [
             'icon'       => 'ic_launcher',
             'color'      => '#1B255D',
         ],
-
-        // ---------------------------------------------------------
-        // 3) Configuración Android
-        // ---------------------------------------------------------
+        // 3) Android OK
         'android' => [
             'priority' => 'high',
             'notification' => [
@@ -141,25 +132,26 @@ $payload = [
                 'color'      => '#1B255D',
             ],
         ],
-
-        // ---------------------------------------------------------
-        // 4) Configuración iOS (APNs)
-        // ---------------------------------------------------------
+        // 4) iOS — APS corregido (solo 1 notificación, y permite background)
         'apns' => [
             'headers' => [
                 'apns-priority' => '10',
+                'apns-push-type' => 'alert'
             ],
             'payload' => [
                 'aps' => [
+                    // Mostrar solo UNA notificación en iOS
                     'alert' => [
                         'title' => $request->title ?? '',
                         'body'  => $request->body ?? '',
                     ],
-                    'sound' => 'default',
-                ],
-            ],
+                    // Permite que iOS ejecute background handler
+                    'content-available' => 1,
+                    // Sonido normal
+                    'sound' => 'default'
+                ]
+            ]
         ],
-
     ]),
 ];
 
